@@ -9,8 +9,8 @@ This is the repository where we are developing the _code_ that will guide our ro
  Since mostof you are lazy and use GitKraken, there's no point in telling you what prefix to use.
 ###Content:
   Keep it short and simple. But not stupid. Please.
-  
-  
+
+
 ##Code standards
 ###Indentation
 + Indentations are made of two spaces
@@ -41,6 +41,3 @@ The structure used to describe a function is as follows:
 + God
 
 ;)
-
-
-
