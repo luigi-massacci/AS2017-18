@@ -78,6 +78,8 @@ class GUI():
         room.draw_room()
         room.draw_victims()
         robot.draw_robot()
+        robot.move([100, 0])
+        time.sleep(1)
 
 #clears the screen of all present items (items are either text or buttons)
     def clear(self):
@@ -132,6 +134,7 @@ class Robot(Room):
     wheel_width = 1 * Room.zoom
     #speed
     #center
+    robot_pos = [Room.x_corner, Room.y_corner]
 
     def draw_robot(self):
         #main body
@@ -154,8 +157,32 @@ class Robot(Room):
                             self.robot_length-self.wheel_length, Room.lastroom_height-self.wheel_width-20,
                             self.robot_length, Room.lastroom_height- self.wheel_width-20 , fil="red"))
 
-    def move(self, distance):
-        pass
+    def move(self, distance): #distance as list. x distance && y distance
+        step_x = 1
+        step_y = 0
+        if distance[0] < 0: #i.e. go backwards
+            step_x = -1
+            distance[0] = abs(distance[0])
+        if distance[1] < 0:
+            step_y = -1
+            distance[1] = abs(distance[1])
+        while distance[0] > -1 and distance[1] > -1:
+            if (distance[0] > -1):
+                distance[0] = distance[0] -1
+            else:
+                step_x = 0
+            if (distance[1] > -1):
+                distance[1] = distance[1] -1
+            else:
+                step_y = 0
+            for i in range(len(GUI.canvas_id)-5, len(GUI.canvas_id)):
+                GUI.canvas.move(GUI.canvas_id[i], step_x, step_y)
+
+            GUI.tk.update()
+            time.sleep(0.01)
+        self.robot_pos[0] = self.robot_pos[0] + distance[0]
+        self.robot_pos[1] = self.robot_pos[1] + distance[1]
+
     def rotate(self, angle):
         pass
 
