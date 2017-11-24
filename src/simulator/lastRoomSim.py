@@ -54,7 +54,7 @@ class GUI():
         self.canvas_id.append(self.canvas.create_text(150, 300, text="What it most definitely isn't:", font=self.subtitle_font))
         self.canvas_id.append(self.canvas.create_text(367, 330, text="Skynet. But we are trying really hard. I'm not sure it would be that effective though:", font=self.normal_font))
 
-        #image classified as button for practicality
+        #image classified as button for practicality !comment if there is no internet connection
         url = "https://imgs.xkcd.com/comics/skynet.png "
         fin = urlopen(url)
         s = io.BytesIO(fin.read())
@@ -78,7 +78,8 @@ class GUI():
         room.draw_room()
         room.draw_victims()
         robot.draw_robot()
-        robot.move([100, 0])
+        real(room, robot)
+
         time.sleep(1)
 
 #clears the screen of all present items (items are either text or buttons)
@@ -134,7 +135,7 @@ class Robot(Room):
     wheel_width = 1 * Room.zoom
     #speed
     #center
-    robot_pos = [Room.x_corner, Room.y_corner]
+    robot_coord = [Room.x_corner, Room.y_corner]
 
     def draw_robot(self):
         #main body
@@ -160,6 +161,8 @@ class Robot(Room):
     def move(self, distance): #distance as list. x distance && y distance
         step_x = 1
         step_y = 0
+        self.robot_coord[0] = self.robot_coord[0] + distance[0]
+        self.robot_coord[1] = self.robot_coord[1] + distance[1]
         if distance[0] < 0: #i.e. go backwards
             step_x = -1
             distance[0] = abs(distance[0])
@@ -176,15 +179,53 @@ class Robot(Room):
             else:
                 step_y = 0
             for i in range(len(GUI.canvas_id)-5, len(GUI.canvas_id)):
-                GUI.canvas.move(GUI.canvas_id[i], step_x, step_y)
+                GUI.canvas.move(GUI.canvas_id[i], step_x, -1)
 
             GUI.tk.update()
             time.sleep(0.01)
-        self.robot_pos[0] = self.robot_pos[0] + distance[0]
-        self.robot_pos[1] = self.robot_pos[1] + distance[1]
 
     def rotate(self, angle):
         pass
+
+
+def real(Room, Robot):
+    #sort victims by Y (smallest to largest)
+    for startIndex in range(0, 5):
+        smallestIndex = startIndex
+        for currentIndex in range( startIndex + 1 , 5):
+            if Room.victims_coord[1][currentIndex] < Room.victims_coord[1][smallestIndex]:
+                smallestIndex = currentIndex
+
+        tmp_x = Room.victims_coord[0][startIndex]
+        tmp_y = Room.victims_coord[1][startIndex]
+        Room.victims_coord[0][startIndex] = Room.victims_coord[0][smallestIndex]
+        Room.victims_coord[1][startIndex] = Room.victims_coord[1][smallestIndex]
+
+        Room.victims_coord[0][smallestIndex] = tmp_x
+        Room.victims_coord[1][smallestIndex] = tmp_y
+
+    for i in range(0, 5):
+        print(Room.victims_coord[1][i])
+    #calculate angles to turn and distances
+    d = [0, 0, 0, 0, 0]
+
+    theta = [0, 0, 0, 0, 0]
+    thetaMoved = [0, 0, 0, 0, 0]
+
+    for i in range (0, 5):
+        a = Robot.robot_coord[0] - Room.victims_coord[0][i];
+        b = Room.victims_coord[1][i] - Robot.robot_coord[1];
+        theta[i] = math.atan(a/b);
+        if i > 0:
+            thetaMoved[i] = theta[i] - theta[i-1];
+        else:
+            thetaMoved[i] = theta[i];
+        thetad = theta[i] * 180/3.14
+        print(thetad)
+        Robot.move([-a, b])
+        time.sleep(1)
+
+        d[i] = math.sqrt(a*a + b*b)
 
 
 gui = GUI()
