@@ -58,6 +58,7 @@ def rotatefor(item, angle):
         if angle < 0:
             step = -step
         canvas.delete(item)
+
         item = draw_square(rotate(vertices, step, [MID_X, MID_Y]), color="blue")
         time.sleep(0.01)
         root.update()
@@ -87,6 +88,21 @@ item = draw_square(vertices)
 movefor(item, 100)
 rotatefor(item, -65)
 movefor(item, 100)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
