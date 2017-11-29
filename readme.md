@@ -14,7 +14,7 @@ This is the repository where we are developing the _code_ that will guide our ro
 ##Code standards
 + if in doubt, follow the Python Zen (import this)
 ###Indentation
-+ Indentations are made of two spaces
++ Indentations is made by a tab
 
 ###Comments
 Comments should respect these parameters:
