@@ -25,6 +25,7 @@ current_angle = 0
 def draw_square(points, color="blue"):
     return canvas.create_polygon(points, fill=color)
 
+item = draw_square(vertices)
 def move(points, distance):
     angle = math.radians(abs(current_angle))
     cos_val = math.cos(angle)
@@ -36,7 +37,8 @@ def move(points, distance):
 
     return vertices
 
-def movefor(item, distance):
+def movefor(distance):
+    global item
     for i in range(0, abs(distance+1)):
         step = 1
         if distance < 0:
@@ -46,13 +48,13 @@ def movefor(item, distance):
         item = draw_square(move(vertices, step), color="blue")
         time.sleep(0.01)
         root.update()
+        global MID_X
+        global MID_Y
+        MID_X = (vertices[3][0] + vertices[1][0])/2
+        MID_Y = (vertices[3][1] + vertices[1][1])/2
 
-    global MID_X
-    MID_X = vertices[0][0] + WIDTH/2
-    global MID_Y
-    MID_Y = vertices[3][1] + HEIGHT/2
-
-def rotatefor(item, angle):
+def rotatefor(angle):
+    global item
     for i in range(0, abs(angle+1)):
         step = 1
         if angle < 0:
@@ -84,16 +86,16 @@ def rotate(points, angle, center):
     return new_points
 
 
-item = draw_square(vertices)
-movefor(item, 100)
-rotatefor(item, -65)
-movefor(item, 100)
 
-
-
-
-
-
+movefor(100)
+rotatefor(-65)
+movefor(100)
+rotatefor(65)
+movefor(100)
+rotatefor(90)
+movefor(-200)
+rotatefor(-90)
+movefor(200)
 
 
 
