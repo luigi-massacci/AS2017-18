@@ -12,11 +12,13 @@ root = Tk()
 canvas = Canvas(root, bg="white", height=CANVAS_HEIGHT, width=CANVAS_WIDTH)
 canvas.pack()
 
+start_x = 100
+start_y = 600
 vertices = [
-    [100, 100],
-    [100, 100+HEIGHT],
-    [100+WIDTH, 100+HEIGHT],
-    [100+WIDTH, 100],
+    [start_x , start_y],
+    [start_x , start_y+HEIGHT],
+    [start_x +WIDTH, start_y+HEIGHT],
+    [start_x +WIDTH, start_y],
 ]
 MID_X = vertices[0][0] + WIDTH/2
 MID_Y = vertices[3][1] + HEIGHT/2
@@ -39,7 +41,7 @@ def move(points, distance):
 
 def movefor(distance):
     global item
-    for i in range(0, abs(distance+1)):
+    for i in range(0, abs(distance)):
         step = 1
         if distance < 0:
             step = -step
@@ -53,9 +55,10 @@ def movefor(distance):
         MID_X = (vertices[3][0] + vertices[1][0])/2
         MID_Y = (vertices[3][1] + vertices[1][1])/2
 
+
 def rotatefor(angle):
     global item
-    for i in range(0, abs(angle+1)):
+    for i in range(0, abs(angle)):
         step = 1
         if angle < 0:
             step = -step
@@ -66,7 +69,6 @@ def rotatefor(angle):
         root.update()
     global current_angle
     current_angle += angle
-
 
 
 def rotate(points, angle, center):
@@ -86,36 +88,15 @@ def rotate(points, angle, center):
     return new_points
 
 
-
 movefor(100)
 rotatefor(-65)
 movefor(100)
 rotatefor(65)
 movefor(100)
 rotatefor(90)
-movefor(-200)
+movefor(-100)
 rotatefor(-90)
-movefor(200)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+movefor(100)
 
 
 root.mainloop()
