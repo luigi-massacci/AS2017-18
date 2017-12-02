@@ -28,11 +28,10 @@ def draw_square(points, color="blue"):
     return canvas.create_polygon(points, fill=color)
 
 item = draw_square(vertices)
-def move(points, distance):
+def move(distance):
     angle = math.radians(abs(current_angle))
     cos_val = math.cos(angle)
     sin_val = math.sin(angle)
-    new_points = []
     for i in range(0, 4):
         vertices[i][0] = vertices[i][0] + cos_val * distance
         vertices[i][1] = vertices[i][1] + sin_val * -distance
@@ -47,7 +46,7 @@ def movefor(distance):
             step = -step
         canvas.delete(item)
 
-        item = draw_square(move(vertices, step), color="blue")
+        item = draw_square(move(step), color="blue")
         time.sleep(0.01)
         root.update()
         global MID_X
