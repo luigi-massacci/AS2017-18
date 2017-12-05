@@ -1,234 +1,290 @@
-#I'm new to python, so the code kind of sucks. have mercy upon my soul
-#the comments are for Nicola
-
-####################################
-# Prerequisites:
-# - Python3 (it can be used with Python2 with some editing)
-# - tkinter graphics package
-# - Python Imaging Library (PIL)
-# - the basic python packages
-###################################
-
-import time
 from tkinter import *
-from tkinter import font as tkfont
-import random
 import math
-from PIL import Image
-from PIL import ImageTk
-import io
-from urllib.request import urlopen
+import time
+import random
+
+################################################################################
+#GLOABAL VARIABLES
+################################################################################
+#TK VARIABLES
+CANVAS_WIDTH = 1000
+CANVAS_HEIGHT = 1000
+
+root = Tk()
+canvas = Canvas(root, height=CANVAS_HEIGHT, width=CANVAS_WIDTH, bg="#ffffcc")
+canvas.pack()
+
+zoom = 7
+
+#ROOM VARIABLES
+corner_x = 10
+corner_y = 10
+WIDTH = 90 * zoom
+HEIGHT = 120 * zoom
+corners = [
+    [corner_x , corner_y],
+    [corner_x , corner_y+HEIGHT],
+    [corner_x +WIDTH, corner_y+HEIGHT],
+    [corner_x +WIDTH, corner_y],
+]
+
+#ROBOT VARIABLES
+start_x = 20
+start_y = corners[1][1] - 80
+
+R_WIDTH = 14 * zoom
+R_HEIGHT = 7 * zoom
+r_vertices = [
+    [start_x , start_y],
+    [start_x , start_y+R_HEIGHT],
+    [start_x +R_WIDTH, start_y+R_HEIGHT],
+    [start_x +R_WIDTH, start_y],
+]
+W_WIDTH = 5 * zoom
+W_HEIGHT = 1 * zoom
+w1_vertices = [
+    [start_x, start_y-W_HEIGHT],
+    [start_x , start_y],
+    [start_x + W_WIDTH, start_y],
+    [start_x +W_WIDTH, start_y-W_HEIGHT],
+]
+w2_vertices = [
+    [start_x, start_y+R_HEIGHT],
+    [start_x , start_y+R_HEIGHT+W_HEIGHT],
+    [start_x + W_WIDTH, start_y+R_HEIGHT+W_HEIGHT],
+    [start_x +W_WIDTH, start_y+R_HEIGHT],
+]
+w3_vertices = [
+    [start_x+R_WIDTH-W_WIDTH, start_y+R_HEIGHT],
+    [start_x+R_WIDTH-W_WIDTH, start_y+R_HEIGHT+W_HEIGHT],
+    [start_x+R_WIDTH, start_y+R_HEIGHT+W_HEIGHT],
+    [start_x+R_WIDTH, start_y+R_HEIGHT],
+]
+w4_vertices = [
+    [start_x+R_WIDTH-W_WIDTH, start_y-W_HEIGHT],
+    [start_x+R_WIDTH-W_WIDTH, start_y],
+    [start_x+R_WIDTH, start_y],
+    [start_x+R_WIDTH, start_y-W_HEIGHT],
+]
+center = [r_vertices[0][0] + R_WIDTH/2, r_vertices[3][1] + R_HEIGHT/2]
+current_angle = 0
+
+#VICTIMS VARIABLES
+V_DIAMETER = 5 * zoom
+v1_vertices = [
+    [200-V_DIAMETER/2, 100-V_DIAMETER/2],
+    [200+V_DIAMETER/2, 100+V_DIAMETER/2],
+]
+v2_vertices = [
+    [100-V_DIAMETER/2, 200-V_DIAMETER/2],
+    [100+V_DIAMETER/2, 200+V_DIAMETER/2],
+]
+v3_vertices = [
+    [300-V_DIAMETER/2, 300-V_DIAMETER/2],
+    [300+V_DIAMETER/2, 300+V_DIAMETER/2],
+]
+v4_vertices = [
+    [500-V_DIAMETER/2, 450-V_DIAMETER/2],
+    [500+V_DIAMETER/2, 450+V_DIAMETER/2],
+]
+v5_vertices = [
+    [400-V_DIAMETER/2, 600-V_DIAMETER/2],
+    [400+V_DIAMETER/2, 600+V_DIAMETER/2],
+]
+
+E_SIDE = 20* zoom
+evac_vertices = [
+    [corner_x, corner_y],
+    [corner_x, corner_y+E_SIDE],
+    [corner_x+E_SIDE, corner_y]
+]
+victims_coord = [
+    [400, 600],
+    [500, 450],
+    [300, 300],
+    [100, 200],
+    [200, 100],
+    [int(corner_x+E_SIDE/2), int(corner_y+E_SIDE/2)]
+]
+# random.seed()
+# for i in range(0, 5):
+#     victims_coord[i][0] = random.randint(int(corner_x+V_DIAMETER/2), int(WIDTH-V_DIAMETER/2))
+#     victims_coord[i][1] = random.randint(int(corner_y+V_DIAMETER/2), int(HEIGHT-V_DIAMETER/2-R_HEIGHT-80))
+#
+# v1_vertices = [
+#     [victims_coord[0][0]-V_DIAMETER/2, victims_coord[0][1]-V_DIAMETER/2],
+#     [victims_coord[0][0]+V_DIAMETER/2, victims_coord[0][1]+V_DIAMETER/2],
+# ]
+# v2_vertices = [
+#     [victims_coord[1][0]-V_DIAMETER/2, victims_coord[1][1]-V_DIAMETER/2],
+#     [victims_coord[1][0]+V_DIAMETER/2, victims_coord[1][1]+V_DIAMETER/2],
+# ]
+# v3_vertices = [
+#     [victims_coord[2][0]-V_DIAMETER/2, victims_coord[2][1]-V_DIAMETER/2],
+#     [victims_coord[2][0]+V_DIAMETER/2, victims_coord[2][1]+V_DIAMETER/2],
+# ]
+# v4_vertices = [
+#     [victims_coord[3][0]-V_DIAMETER/2, victims_coord[3][1]-V_DIAMETER/2],
+#     [victims_coord[3][0]+V_DIAMETER/2, victims_coord[3][1]+V_DIAMETER/2],
+# ]
+# v5_vertices = [
+#     [victims_coord[4][0]-V_DIAMETER/2, victims_coord[4][1]-V_DIAMETER/2],
+#     [victims_coord[4][0]+V_DIAMETER/2, victims_coord[4][1]+V_DIAMETER/2],
+# ]
 
 
-class GUI():
-    #initialize tkinter pointer & GUI
-    tk = Tk()
-    canvas = Canvas(tk, width=1000, height=800)
-    canvas.pack()
 
-    #fonts
-    title_font = tkfont.Font(family="Helvetica", size=20)
-    subtitle_font = tkfont.Font(family="Helvetica", size=15, weight="bold")
-    normal_font = tkfont.Font(family="Helvetica", size=13)
-    small_font = tkfont.Font(family="Helvetica", size=10)
-    really_small_font = tkfont.Font(family="Helvetica", size=7)
+################################################################################
+#FUNCTIONS
+################################################################################
 
-    canvas_id = []
-    buttons_id = []
+def clear(item):
+    canvas.delete(item)
 
-#displays some stupid text
-    def initialize(self):
-        self.canvas.create_text((1000-53)/2, 20, text="Victim evacuation simulator (RoboCup rcj rescue line).", font=self.title_font, fill="red")
+def draw_square(points, color="blue", border=''):
+    return canvas.create_polygon(points, fill=color, outline=border)
+def draw_circle(points, color="blue", border=''):
+    return canvas.create_oval(points, fill=color, outline=border)
 
-        self.buttons_id.append(Button(GUI.tk, text="-->", command=self.begin))
-        self.buttons_id[0].place(x = (1000-130)/2, y = 50)
+def draw_victim(point, color="silver"):
+    return canvas.create_oval(points, fill=color, outline=border)
 
-        self.canvas_id.append(self.canvas.create_text(140, 110, text="What this simulator-ish is:", font=self.subtitle_font))
-        self.canvas_id.append(self.canvas.create_text(400, 140, text="A free, open-source simulator for ... (it's written in really large characters in the title above)", font=self.normal_font))
-        self.canvas_id.append(self.canvas.create_text(466, 160, text="the code is available on git (BitBucket hosting) at https://bitbucket.org/rescuea_galilei_20172018/rescuea. ", font=self.normal_font))
-        self.canvas_id.append(self.canvas.create_text(418, 180, text="You are of course allowed to review and edit the code, and any improvement is quite welcome.", font=self.normal_font))
-        self.canvas_id.append(self.canvas.create_text(445, 200, text="PLEASE don't break it (i.e. if you don't understand something, don't touch it). You also aren't allowed ", font=self.normal_font))
-        self.canvas_id.append(self.canvas.create_text(455, 220, text="to transform it into an evil AI (by mistake or on purpose); feel free to turn it into a billion dollar invention, ", font=self.normal_font))
-        self.canvas_id.append(self.canvas.create_text(430, 240, text="so long as you give us a cut. I'm aware the formatting is awful, and I'll try to fix it someday. I hope.", font=self.normal_font))
+def move(points, distance):
+    angle = math.radians(abs(current_angle))
+    cos_val = math.cos(angle)
+    sin_val = math.sin(angle)
+    for i in range(0, 4):
+        points[i][0] = points[i][0] + cos_val * distance
+        points[i][1] = points[i][1] + sin_val * -distance
 
-        self.canvas_id.append(self.canvas.create_text(150, 300, text="What it most definitely isn't:", font=self.subtitle_font))
-        self.canvas_id.append(self.canvas.create_text(367, 330, text="Skynet. But we are trying really hard. I'm not sure it would be that effective though:", font=self.normal_font))
+    return points
 
-        #image classified as button for practicality !comment if there is no internet connection
-        url = "https://imgs.xkcd.com/comics/skynet.png "
-        fin = urlopen(url)
-        s = io.BytesIO(fin.read())
-        pil_image = Image.open(s)
-        tk_image = ImageTk.PhotoImage(pil_image)
-        label = Label(self.tk, image=tk_image)
-        self.buttons_id.append(label)
-        self.buttons_id[1].place(x = (15), y = 360)
-        self.canvas_id.append(self.canvas.create_text((1000-53)/2, 680, text="Image credit: XKCD webcomic https://xkcd.com/1046/", font=self.really_small_font))
-
-        self.canvas_id.append(self.canvas.create_text((1000-53)/2, 750, text="Made mostly by Luigi Massacci, No Rights Reserved", font=self.small_font))
-
-        self.tk.mainloop()
-
-#instantiates basic objects
-    def begin(self):
-        self.clear()
-        room = Room()
-        robot = Robot()
-
-        room.draw_room()
-        room.draw_victims()
-        robot.draw_robot()
-        real(room, robot)
-
-        time.sleep(1)
-
-#clears the screen of all present items (items are either text or buttons)
-    def clear(self):
-        for i in range(0, len(self.canvas_id)):
-            self.canvas.delete(self.canvas_id[i])
-        for k in range(0, len(self.buttons_id)):
-            self.buttons_id[k].destroy()
-
-        del self.canvas_id[:]
-        del self.buttons_id[:]
-
-#displays input fields to set simulation parameters
-    def parameters(self):
-        pass
+def movefor(distance):
+    global robot
+    global w1
+    global w2
+    global w3
+    global w4
+    global r_vertices
+    global w1_vertices
+    global w2_vertices
+    global w3_vertices
+    global w4_vertices
+    for i in range(0, abs(distance)):
+        step = 1
+        if distance < 0:
+            step = -step
+        canvas.delete(robot)
+        canvas.delete(w1)
+        canvas.delete(w2)
+        canvas.delete(w3)
+        canvas.delete(w4)
 
 
+        r_vertices = move(r_vertices, step)
+        robot = draw_square(r_vertices)
+        w1_vertices = move(w1_vertices, step)
+        w1 = draw_square(w1_vertices, color="red")
+        w2_vertices = move(w2_vertices, step)
+        w2 = draw_square(w2_vertices, color="red")
+        w3_vertices = move(w3_vertices, step)
+        w3 = draw_square(w3_vertices, color="red")
+        w4_vertices = move(w4_vertices, step)
+        w4 = draw_square(w4_vertices, color="red")
 
-class Room(GUI):
-    #room measures
-    zoom = 5
-    x_corner = 20
-    y_corner = 50
-    lastroom_width = 90 * zoom + x_corner
-    lastroom_height = 120 * zoom + y_corner
+        time.sleep(0.005)
+        root.update()
+        center[0] = (r_vertices[3][0] + r_vertices[1][0])/2
+        center[1] = (r_vertices[3][1] + r_vertices[1][1])/2
 
-    #victims coord
-    vic_radius = 2 * zoom
-    w, h = 5, 2
-    victims_coord = [[0 for x in range(5)] for y in range(2)]
-    random.seed()
-    for i in range(0, 5):
-        victims_coord[0][i] = random.randint(x_corner+vic_radius, lastroom_width-vic_radius)
-    for i in range(0, 5):
-        victims_coord[1][i] = random.randint(y_corner+vic_radius, lastroom_height-vic_radius-60)
+def rotate(points, angle, center):
+    angle = math.radians(angle)
+    cos_val = math.cos(angle)
+    sin_val = math.sin(angle)
+    cx, cy = center
+    new_points = []
+    for x_old, y_old in points:
+        x_old -= cx
+        y_old -= cy
+        x_new = x_old * cos_val - y_old * sin_val
+        y_new = x_old * sin_val + y_old * cos_val
+        new_points.append([x_new + cx, y_new + cy])
+    return new_points
 
-    #evac coords
-    #...
+def rotatefor(angle):
+    global robot
+    global w1
+    global w2
+    global w3
+    global w4
+    global r_vertices
+    global w1_vertices
+    global w2_vertices
+    global w3_vertices
+    global w4_vertices
+    for i in range(0, abs(angle)):
+        step = 1
+        if angle < 0:
+            step = -step
+        canvas.delete(robot)
+        canvas.delete(w1)
+        canvas.delete(w2)
+        canvas.delete(w3)
+        canvas.delete(w4)
 
-    def draw_room(self):
-        GUI.canvas_id.append(GUI.canvas.create_rectangle(self.x_corner, self.y_corner, self.lastroom_width, self.lastroom_height, fill="white"))
-    def draw_victims(self):
-        for i in range(0, 5):
-            GUI.canvas_id.append(GUI.canvas.create_oval(self.victims_coord[0][i]-self.vic_radius, self.victims_coord[1][i]+self.vic_radius, self.victims_coord[0][i]+self.vic_radius, self.victims_coord[1][i]-self.vic_radius, fill="blue"))
-    def draw_evac(self):
-        pass
+        r_vertices = rotate(r_vertices, step, center)
+        robot = draw_square(r_vertices)
+        w1_vertices = rotate(w1_vertices, step, center)
+        w1 = draw_square(w1_vertices, color="red")
+        w2_vertices = rotate(w2_vertices, step, center)
+        w2 = draw_square(w2_vertices, color="red")
+        w3_vertices = rotate(w3_vertices, step, center)
+        w3 = draw_square(w3_vertices, color="red")
+        w4_vertices = rotate(w4_vertices, step, center)
+        w4 = draw_square(w4_vertices, color="red")
+        time.sleep(0.005)
+        root.update()
+    global current_angle
+    current_angle += angle
 
-class Robot(Room):
-    #robot measures
-    robot_length = 18 * Room.zoom #believable length, it will probably be shorter
-    robot_width =  7 * Room.zoom #believable width, it will probably be larger
-    wheel_length = 5 * Room.zoom
-    wheel_width = 1 * Room.zoom
-    #speed
-    #center
-    robot_coord = [Room.x_corner, Room.y_corner]
+#instantiate tk objects
+room = draw_square(corners, color="white", border="black")
+robot = draw_square(r_vertices)
+w1 = draw_square(w1_vertices, color="red")
+w2 = draw_square(w2_vertices, color="red")
+w3 = draw_square(w3_vertices, color="red")
+w4 = draw_square(w4_vertices, color="red")
 
-    def draw_robot(self):
-        #main body
-        GUI.canvas_id.append(GUI.canvas.create_polygon(Room.x_corner, Room.lastroom_height-self.wheel_width-20, self.robot_length, Room.lastroom_height-self.wheel_width-20,
-                              self.robot_length, Room.lastroom_height-self.robot_width-20, Room.x_corner, Room.lastroom_height-self.robot_width-20, fil="green"))
-        #wheels
-        GUI.canvas_id.append(GUI.canvas.create_polygon(Room.x_corner, Room.lastroom_height-self.robot_width-20, Room.x_corner + self.wheel_length, Room.lastroom_height-self.robot_width-20,
-                              Room.x_corner + self.wheel_length, Room.lastroom_height-self.robot_width-self.wheel_width-20,
-                              Room.x_corner, Room.lastroom_height-self.robot_width - self.wheel_width-20, fil="red"))
+victims = []
+victims.append(draw_circle(v5_vertices, color="silver"))
+victims.append(draw_circle(v4_vertices, color="silver"))
+victims.append(draw_circle(v3_vertices, color="silver"))
+victims.append(draw_circle(v2_vertices, color="silver"))
+victims.append(draw_circle(v1_vertices, color="silver"))
+draw_square(evac_vertices, color="black")
 
-        GUI.canvas_id.append(GUI.canvas.create_polygon(self.robot_length, Room.lastroom_height-self.robot_width-20, self.robot_length-self.wheel_length, Room.lastroom_height-self.robot_width-20,
-                             self.robot_length-self.wheel_length, Room.lastroom_height-self.robot_width-self.wheel_width-20,
-                             self.robot_length, Room.lastroom_height-self.robot_width - self.wheel_width -20, fil="red"))
+################################################################################
+#ACTUAL CODE
+################################################################################
+root.update()
+time.sleep(3)
 
-        GUI.canvas_id.append(GUI.canvas.create_polygon(Room.x_corner, Room.lastroom_height-20, Room.x_corner + self.wheel_length, Room.lastroom_height-20,
-                             Room.x_corner + self.wheel_length, Room.lastroom_height-self.wheel_width-20,
-                             Room.x_corner, Room.lastroom_height- self.wheel_width -20, fil="red"))
+movefor(515)
+rotatefor(-90)
 
-        GUI.canvas_id.append(GUI.canvas.create_polygon(self.robot_length, Room.lastroom_height-20, self.robot_length-self.wheel_length, Room.lastroom_height-20,
-                            self.robot_length-self.wheel_length, Room.lastroom_height-self.wheel_width-20,
-                            self.robot_length, Room.lastroom_height- self.wheel_width-20 , fil="red"))
-
-    def move(self, distance): #distance as list. x distance && y distance
-        step_x = 1
-        step_y = 0
-        self.robot_coord[0] = self.robot_coord[0] + distance[0]
-        self.robot_coord[1] = self.robot_coord[1] + distance[1]
-        if distance[0] < 0: #i.e. go backwards
-            step_x = -1
-            distance[0] = abs(distance[0])
-        if distance[1] < 0:
-            step_y = -1
-            distance[1] = abs(distance[1])
-        while distance[0] > -1 and distance[1] > -1:
-            if (distance[0] > -1):
-                distance[0] = distance[0] -1
-            else:
-                step_x = 0
-            if (distance[1] > -1):
-                distance[1] = distance[1] -1
-            else:
-                step_y = 0
-            for i in range(len(GUI.canvas_id)-5, len(GUI.canvas_id)):
-                GUI.canvas.move(GUI.canvas_id[i], step_x, -1)
-
-            GUI.tk.update()
-            time.sleep(0.01)
-
-    def rotate(self, angle):
-        pass
-
-
-def real(Room, Robot):
-    #sort victims by Y (smallest to largest)
-    for startIndex in range(0, 5):
-        smallestIndex = startIndex
-        for currentIndex in range( startIndex + 1 , 5):
-            if Room.victims_coord[1][currentIndex] < Room.victims_coord[1][smallestIndex]:
-                smallestIndex = currentIndex
-
-        tmp_x = Room.victims_coord[0][startIndex]
-        tmp_y = Room.victims_coord[1][startIndex]
-        Room.victims_coord[0][startIndex] = Room.victims_coord[0][smallestIndex]
-        Room.victims_coord[1][startIndex] = Room.victims_coord[1][smallestIndex]
-
-        Room.victims_coord[0][smallestIndex] = tmp_x
-        Room.victims_coord[1][smallestIndex] = tmp_y
-
-    for i in range(0, 5):
-        print(Room.victims_coord[1][i])
-    #calculate angles to turn and distances
-    d = [0, 0, 0, 0, 0]
-
-    theta = [0, 0, 0, 0, 0]
-    thetaMoved = [0, 0, 0, 0, 0]
-
-    for i in range (0, 5):
-        a = Robot.robot_coord[0] - Room.victims_coord[0][i];
-        b = Room.victims_coord[1][i] - Robot.robot_coord[1];
-        theta[i] = math.atan(a/b);
-        if i > 0:
-            thetaMoved[i] = theta[i] - theta[i-1];
-        else:
-            thetaMoved[i] = theta[i];
-        thetad = theta[i] * 180/3.14
-        print(thetad)
-        Robot.move([-a, b])
-        time.sleep(1)
-
-        d[i] = math.sqrt(a*a + b*b)
+for i in range(0, 6):
+    a = center[0] - victims_coord[i][0]
+    b = center[1] - victims_coord[i][1]
+    new_angle = -int((math.atan(a/b)*(180/math.pi)))
+    rotatefor(new_angle)
+    dist = int(math.sqrt(a*a+b*b))
+    movefor(dist)
+    rotatefor(-new_angle)
+    if i < 5:
+        clear(victims[i])
 
 
-gui = GUI()
-gui.initialize()
 
-gui.tk.mainloop()
+
+
+root.mainloop()
