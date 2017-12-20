@@ -12,9 +12,9 @@ This is the repository where we are developing the _code_ that will guide our ro
 
 
 ##Code standards
-+ if in doubt, follow the Python Zen (import this).
+ if in doubt, follow the Python Zen (import this).
 ###Indentation
-+ Indentations is made by a tab.
+ Indentations are made by a tab.
 
 ###Comments
 Comments should respect these parameters:
