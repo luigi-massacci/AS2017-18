@@ -1,11 +1,17 @@
 #include "motori.h"
+#include <Arduino.h>
 
-Motori::motori( int pin1, int pin2, int pin3, int pin4 )
+Motori::Motori( int pin1, int pin2, int pin3, int pin4 )
 {
   pin_dx1 = pin1;
   pin_dx2 = pin2;
   pin_sx1 = pin3;
   pin_sx2 = pin4;
+
+  pinMode(pin_dx1, OUTPUT);
+  pinMode(pin_dx2, OUTPUT);
+  pinMode(pin_sx1, OUTPUT);
+  pinMode(pin_sx2, OUTPUT);
 }
 
 // void motori::gira_di( int a )
@@ -48,9 +54,9 @@ void Motori::move( int SX, int DX) //lato=0 sinistra,   lato=1 destra
 }
 
 PID::PID(){
-  Kp=10;     //i valori sono casuali, vanno sistemati
-  Ki=10;
-  Kd=10;
+  Kp=-10;     //i valori sono casuali, vanno sistemati
+  Ki=-10;
+  Kd=-10;
   I=0;
   E=0;
 }
@@ -61,16 +67,18 @@ PID::PID(int p, int i, int d){
   Kd=d;
 }
 
-int PID::pid(int vet[]){        //il vettore in input Ã¨ di lunghezza 8: adattiamo il programma di esempio per leggere solo i valori pari
+int PID::pid(int vet[]){        //il vettore in input è di lunghezza 8: adattiamo il programma di esempio per leggere solo i valori pari
   int M, S;
   for(int i=0; i<8; i++){
     M+=vet[i]*i;
     S+=vet[i];
   }
-  double E_prec=E;
-  E=M/S-3.5;        //da controllare (forse Ã¨ 3.5-M/S)
+  bool segno = (E > 0) ;   //segno=1 se l'errore è verso destra, segno=0 se verso sinistra
+  E=M/S-3.5;        //da controllare (forse è 3.5-M/S)
+  if(segno != (E>0))
+    I=0;
   P=E*Kp;
   I+=E*Ki;
-  D=D-E*Kd;
+  D=E*Kd-D;
   return P+I+D;
 }
