@@ -16,11 +16,13 @@ class PID{
   private:
     int Kp, Ki, Kd;
     double P, I, D, E;
+    int contatore;
   public:
     PID();
     PID(int ,int ,int);
     int pid(int*);
+    void controllo(int*);
+    void backTrack();
 };
 
 #endif
-
