@@ -67,18 +67,41 @@ PID::PID(int p, int i, int d){
   Kd=d;
 }
 
-int PID::pid(int vet[]){        //il vettore in input è di lunghezza 8: adattiamo il programma di esempio per leggere solo i valori pari
+int PID::pid(int vet[]){        //il vettore in input ï¿½ di lunghezza 8: adattiamo il programma di esempio per leggere solo i valori pari
   int M, S;
   for(int i=0; i<8; i++){
     M+=vet[i]*i;
     S+=vet[i];
   }
-  bool segno = (E > 0) ;   //segno=1 se l'errore è verso destra, segno=0 se verso sinistra
-  E=M/S-3.5;        //da controllare (forse è 3.5-M/S)
+  bool segno = (E > 0) ;   //segno=1 se l'errore ï¿½ verso destra, segno=0 se verso sinistra
+  E=M/S-3.5;        //da controllare (forse ï¿½ 3.5-M/S)
   if(segno != (E>0))
     I=0;
   P=E*Kp;
   I+=E*Ki;
   D=E*Kd-D;
   return P+I+D;
+}
+
+void PID::controllo(int vet[]){
+  bool linea=0, a_retto_sx=1, a_retto_dx=1;
+  for(int i=0; i<8; i++){
+    if( i<4 && vet[i]>BIANCO )
+        a_retto_sx=0;
+    if( i>=4 && vet[i]>BIANCO )
+        a_retto_dx=0;
+    if( vet[i]<BIANCO )
+        linea=1;
+  }
+  if(a_retto_sx)
+    incrocio();    //incrocio() Ã¨ la funzione che gestisce gli incroci, da implementare
+  if(a_retto_dx)
+    incrocio();
+  if(!linea)
+    if( contatore<MAX_CONT )
+      contatore++;
+    else
+      backTrack();   //backTrack() spinge il robot a rifare il percorso al contrario fino a quando
+                     // non ritrova la linea e a quel punto modifica artificialmente il
+                     // valore di PID per evitare lo stallo
 }
