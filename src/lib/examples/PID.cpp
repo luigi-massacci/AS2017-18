@@ -10,7 +10,7 @@ PID::PID(){
   I=0;
 }
 
-PID::PID(int p, int i, int d){
+PID::PID(double p, double i, double d){
   Kp=p;
   Ki=i;
   Kd=d;
