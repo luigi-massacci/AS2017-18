@@ -19,7 +19,7 @@ PID::PID(double p, double i, double d){
 }
 
 int PID::pid_int(int* vet){
-  int M=0, S=0;
+  double M=0, S=0;
   for(int i=0; i<8; i++)
     M+=vet[i]*(i+1), S+=vet[i];
   double E_prec=E;
