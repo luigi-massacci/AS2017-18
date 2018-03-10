@@ -33,13 +33,11 @@ int PID::pid_int(int* vet){
 }
 
 int PID::pid_bool(int* vet){
-  int M=0, S=0;
-  for(int i=0; i<8; i++)
-    vet[i]>BIANCO ? vet[i]=1 : vet[i]=0;
-  for(int i=0; i<8; i++)
-    M+=vet[i]*(i+1), S+=vet[i];
   double E_prec=E;
-  E=4.5-M/S;
+  E=0;
+  for(int i=0; i<8; i++)
+    if(vet[i]<BIANCO)           //se il sensore individua la linea
+      E+=(i-3.5);       //si aggiunge all'errore la posizione della linea all'interno del sistema di riferimento
   if(-0.1<E && E<0.1)
     E_prec=0, I=0;
   P=E*Kp;
