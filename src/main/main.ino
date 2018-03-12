@@ -1,13 +1,9 @@
 #include <Wire.h>
 #include "motori.h"
 int t;
-Motori M(3, 6, 10, 11);
+Motori M(9, 5, 3, 11);
 PID pidous(-10, -10, -10);
 
-
-const int MAX_V = 255;
-const int MIN_V = 100;
-const int STD_V = 200;
 
 int data[8];
 
@@ -23,8 +19,9 @@ void loop()
   Wire.requestFrom(9, 16);
   while (Wire.available())
   {
+    int h=Wire.read();
     if(!(t%2))
-      data[t/2] = Wire.read();
+      data[t/2] = h;
     if (t < 15)
       t++;
     else{
