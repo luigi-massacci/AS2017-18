@@ -1,8 +1,12 @@
 #include <Wire.h>
 #include "motori.h"
+#include "PID.h"
+#include "costanti.h"
+
+
 int t;
-Motori M(9, 5, 3, 11);
-PID pidous(-10, -10, -10);
+Motori M(11, 3, 9, 5);
+PID pidous(30, 0, 0);
 
 
 int data[8];
@@ -12,6 +16,11 @@ void setup()
   Wire.begin();
   Serial.begin(9600);
   t = 0;
+
+  pinMode(11, OUTPUT); //vanno rigorosamente qua e non nei costruttori
+  pinMode(3, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(9, OUTPUT);
 }
 
 void loop()
@@ -26,9 +35,44 @@ void loop()
       t++;
     else{
       t = 0;
-      M.move(STD_V+pidous.pid(data), STD_V-pidous.pid(data));
+
+      int pid_s = STD_V+pidous.pid_bool(data); //potrebbe essere il contrario
+      int pid_d = STD_V-pidous.pid_bool(data);
+
+     if(-MIN_V < pid_s && pid_s < MIN_V){
+       if(pid_s < 0)
+         pid_s+=(2*MIN_V);
+       else
+         pid_s-=(2*MIN_V);
+     }
+
+     if(-MIN_V < pid_d && pid_d < MIN_V){
+       if(pid_d < 0)
+         pid_d+=(2*MIN_V);
+       else
+         pid_d-=(2*MIN_V);
+     }
+
+      // if(-MIN_V < pid_s && pid_s < MIN_V){
+      //   if(pid_s < 0)
+      //     pid_s=MIN_V;
+      //   else
+      //     pid_s=-MIN_V;
+      // }
+      //
+      // if(-MIN_V < pid_d && pid_d < MIN_V){
+      //   if(pid_d < 0)
+      //     pid_d=MIN_V;
+      //   else
+      //     pid_d=-MIN_V;
+      // }
+
+      Serial.print(pid_s);
+      Serial.print("   ");
+      Serial.println(pid_d);
+
+      M.move(pid_s, pid_d); //potrebbe essere il contrario
     }
   }
 
-  delay(500);
 }

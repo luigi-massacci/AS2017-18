@@ -14,13 +14,13 @@ void Motori::move( int SX, int DX) //lato=0 sinistra,   lato=1 destra
 {
   if (SX > 0)
   {
-    analogWrite(pin_sx1, SX+40);
+    analogWrite(pin_sx1, SX);
     analogWrite(pin_sx2, 0);
   }
   else
   {
     analogWrite(pin_sx1, 0);
-    analogWrite(pin_sx2,-SX+40);
+    analogWrite(pin_sx2,-SX);
   }
 
   if (DX > 0)

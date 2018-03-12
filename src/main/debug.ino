@@ -2,7 +2,7 @@
 #include "motori.h"
 #include "costanti.h"
 
-Motori M(3, 11, 5, 9);
+Motori M(11, 3, 9, 5);
 
 int data[8];
 
@@ -10,9 +10,13 @@ void setup()
 {
   Wire.begin();
   Serial.begin(9600);
-  pinMode(11, OUTPUT);
-}
 
+  pinMode(11, OUTPUT);
+  pinMode(3, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(9, OUTPUT);
+  
+}
 char comando;
 
 void loop()
@@ -84,6 +88,7 @@ void test_motori()
   delay(1000);
   M.move(0, 0);
   delay(1000);
+  Serial.println("aaaa");
   M.move(STD_V, -STD_V);
   delay(1000);
   M.move(0, 0);
