@@ -9,7 +9,6 @@ class PID{
   public:
     PID();
     PID(double, double, double);
-    int pid_int(int*);
     int pid_bool(int*);
 };
 
