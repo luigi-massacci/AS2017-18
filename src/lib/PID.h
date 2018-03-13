@@ -1,6 +1,12 @@
 #ifndef PID_H
 #define PID_H
 
+struct eccezione{
+  bool a_retto_sx;
+  bool a_retto_dx;
+  bool linea;
+};
+
 class PID{
   private:
     double Kp, Ki, Kd;
@@ -10,6 +16,7 @@ class PID{
     PID();
     PID(double, double, double);
     int pid_bool(int*);
+    eccezione controllo(int*);
 };
 
 #endif
