@@ -1,6 +1,6 @@
 #include "PID.h"
 #include "costanti.h"
-#include <Arduino.h>
+//#include <Arduino.h>
 
 PID::PID(){
   Kp=10;
@@ -33,4 +33,18 @@ int PID::pid_bool(int* vet){
   I+=E*Ki;
   D=(E-E_prec)*Kd;
   return P+I+D;
+}
+
+eccezione PID::controllo(int* vet){
+  eccezione responso;
+  responso.a_retto_sx=1;
+  responso.a_retto_dx=1;
+  responso.linea=0;
+  for(int i=0; i<8; ++i){
+    if(i<4)
+      responso.a_retto_sx &= (vet[i]<BIANCO);
+    else
+      responso.a_retto_dx &= (vet[i]<BIANCO);
+    responso.linea |= (vet[i]<BIANCO);
+  }
 }
