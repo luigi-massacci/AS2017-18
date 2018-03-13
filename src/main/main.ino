@@ -36,7 +36,7 @@ void loop()
     else{
       t = 0;
 
-      int pid_s = STD_V+pidous.pid_bool(data); //potrebbe essere il contrario
+      int pid_s = STD_V+pidous.pid_bool(data); 
       int pid_d = STD_V-pidous.pid_bool(data);
 
      if(-MIN_V < pid_s && pid_s < MIN_V){
@@ -53,25 +53,7 @@ void loop()
          pid_d-=(2*MIN_V);
      }
 
-      // if(-MIN_V < pid_s && pid_s < MIN_V){
-      //   if(pid_s < 0)
-      //     pid_s=MIN_V;
-      //   else
-      //     pid_s=-MIN_V;
-      // }
-      //
-      // if(-MIN_V < pid_d && pid_d < MIN_V){
-      //   if(pid_d < 0)
-      //     pid_d=MIN_V;
-      //   else
-      //     pid_d=-MIN_V;
-      // }
-
-      Serial.print(pid_s);
-      Serial.print("   ");
-      Serial.println(pid_d);
-
-      M.move(pid_s, pid_d); //potrebbe essere il contrario
+      M.move(pid_s, pid_d); 
     }
   }
 
