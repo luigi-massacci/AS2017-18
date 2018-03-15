@@ -1,4 +1,4 @@
-#include <Wire.h>
+/*#include <Wire.h>
 #include "motori.h"
 #include "PID.h"
 #include "costanti.h"
@@ -6,7 +6,7 @@
 
 int t;
 Motori M(11, 3, 9, 5);
-PID pidous(30, 0, 0);
+PID pidous(10, 20, 5); //30, 0, 0 --> 10, 10, 5 --> 10, 20, 5
 
 
 int data[8];
@@ -36,7 +36,7 @@ void loop()
     else{
       t = 0;
 
-      int pid_s = STD_V+pidous.pid_bool(data); 
+      int pid_s = STD_V+pidous.pid_bool(data);
       int pid_d = STD_V-pidous.pid_bool(data);
 
      if(-MIN_V < pid_s && pid_s < MIN_V){
@@ -52,9 +52,12 @@ void loop()
        else
          pid_d-=(2*MIN_V);
      }
+     Serial.print(pid_s);
+     Serial.print("   ");
+     Serial.println(pid_d);
 
-      M.move(pid_s, pid_d); 
+      M.move(pid_s, pid_d);
     }
   }
 
-}
+}*/

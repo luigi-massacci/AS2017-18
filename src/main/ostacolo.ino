@@ -1,17 +1,17 @@
 #include <Wire.h>
-//#include "motori.h"
-//#include "PID.h"
+#include "motori.h"
+#include "PID.h"
 #include "costanti.h"
 #include "VL53L0X.h"
 
 
-//int t;
+int t;
+Motori M(11, 3, 9, 5);
+PID pidous(10, 20, 5); //30, 0, 0 --> 10, 10, 5 --> 10, 20, 5
+
 VL53L0X Tof;
-//Motori M(11, 3, 9, 5);
-//PID pidous(30, 0, 0);
 
-
-//int data[8];
+int data[8];
 
 void setup()
 {
@@ -20,18 +20,20 @@ void setup()
   Tof.init();
   Tof.setTimeout(500);
   Tof.startContinuous();
-  //t = 0;
+  t = 0;
 
-  //pinMode(11, OUTPUT); //vanno rigorosamente qua e non nei costruttori
-  //pinMode(3, OUTPUT);
-  //pinMode(5, OUTPUT);
-  //pinMode(9, OUTPUT);
+  pinMode(11, OUTPUT); //vanno rigorosamente qua e non nei costruttori
+  pinMode(3, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(9, OUTPUT);
 }
 
 void loop()
 {
-  //Wire.requestFrom(9, 16);
-  /*while (Wire.available())
+  if(Tof.readRangeContinuousMillimeters() < SPAZIO_OSTACOLO)
+    M.aggira_ostacolo();
+  Wire.requestFrom(9, 16);
+  while (Wire.available())
   {
     int h=Wire.read();
     if(!(t%2))
@@ -57,15 +59,12 @@ void loop()
        else
          pid_d-=(2*MIN_V);
      }
+     Serial.print(pid_s);
+     Serial.print("   ");
+     Serial.println(pid_d);
 
-      M.move(pid_s, pid_d);
-      if(Tof.readRangeContinuousMillimeters() < SPAZIO_OSTACOLO)
-        M.aggira_ostacolo();
-
+     M.move(pid_s, pid_d);
     }
-  }*/
-  if(Tof.readRangeContinuousMillimeters() < SPAZIO_OSTACOLO)
-      //M.aggira_ostacolo();
-      Serial.println("Ostacolo");
+  }
 
 }

@@ -1,4 +1,5 @@
 #include "motori.h"
+#include "costanti.h"
 #include <Arduino.h>
 
 Motori::Motori( int pin1, int pin2, int pin3, int pin4 )
@@ -33,4 +34,28 @@ void Motori::move( int SX, int DX) //lato=0 sinistra,   lato=1 destra
     analogWrite(pin_dx1, 0);
     analogWrite(pin_dx2,-DX);
   }
+}
+
+void Motori::aggira_ostacolo(){
+  move(0, 0);
+  move(STD_V, -STD_V);
+  delay(TEMPO_ROTAZIONE);
+
+  move(STD_V, STD_V);
+  delay(TEMPO_AGGIRAMENTO);
+
+  move(-STD_V, STD_V);
+  delay(TEMPO_ROTAZIONE);
+
+  move(STD_V, STD_V);
+  delay(TEMPO_SUPERAMENTO);
+
+  move(-STD_V, STD_V);
+  delay(TEMPO_ROTAZIONE);
+
+  move(STD_V, STD_V);
+  delay(TEMPO_AGGIRAMENTO);
+
+  move(STD_V, -STD_V);
+  delay(TEMPO_ROTAZIONE);
 }
