@@ -1,4 +1,4 @@
-/*#include <Wire.h>
+#include <Wire.h>
 #include "motori.h"
 #include "costanti.h"
 
@@ -101,4 +101,4 @@ void test_motori()
   delay(1000);
   M.move(0, 0);
   delay(2000);
-}*/
+}

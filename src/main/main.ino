@@ -1,4 +1,4 @@
-/*#include <Wire.h>
+#include <Wire.h>
 #include "motori.h"
 #include "PID.h"
 #include "costanti.h"
@@ -60,4 +60,4 @@ void loop()
     }
   }
 
-}*/
+}

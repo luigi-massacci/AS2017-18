@@ -30,6 +30,7 @@ void setup()
 
 void loop()
 {
+  eccezione Casi;
   if(Tof.readRangeContinuousMillimeters() < SPAZIO_OSTACOLO)
     M.aggira_ostacolo();
   Wire.requestFrom(9, 16);
@@ -43,6 +44,13 @@ void loop()
     else{
       t = 0;
 
+      Casi = pidous.controllo(data);
+      
+
+//      if(Casi.a_retto_sx && Casi.a_retto_dx)
+//        M.move(0, 0);
+//        delay(10000);
+        
       int pid_s = STD_V+pidous.pid_bool(data);
       int pid_d = STD_V-pidous.pid_bool(data);
 
