@@ -20,22 +20,22 @@ void setup()
 
   Wire.begin();           //initialize comm protocols
   Serial.begin(9600);
-  
+
   pinMode(11, OUTPUT);     //set pins
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(9, OUTPUT);
   pinMode(12, OUTPUT);
 
-    //initialize ToF
-    Serial.println("A");
+  //initialize ToF
+  Serial.println("A");
 
-  digitalWrite(12, LOW);    
+  digitalWrite(12, LOW);
   //change ToF address
   delay(10);
   digitalWrite(12, HIGH);
-  
-  Tof.init(); 
+
+  Tof.init();
   delay(100);
 
   Tof.setAddress((uint8_t) 0x31);
@@ -45,9 +45,9 @@ void setup()
 
 
   tcs.begin();            //initialize color sensor
-        Serial.println("A");
-t = 0;
 
+  t = 0;
+  Serial.println("FINE SETUP");
 }
 
 
@@ -59,7 +59,6 @@ void loop()
     M.aggira_ostacolo();
 
   Wire.requestFrom(9, 16);
-
   while (Wire.available())
   {
 
@@ -71,39 +70,45 @@ void loop()
     else {
       t = 0;
 
-    for (int i = 0; i < 8; ++i)
-      Serial.println(data[i]);
-      
       Casi = pidous.controllo(data);
 
-      
 
       if (Casi.a_retto_sx && Casi.a_retto_dx)
       {
-        Serial.println("A");
-        uint16_t clear, r, g, b;
-        tcs.setInterrupt(false);      // turn on LED
-        delay(60);  // takes 50ms to read
-        tcs.getRawData(&r, &g, &b, &clear);
-        tcs.setInterrupt(true);  // turn off LED
+
+        Serial.println("INCROCIO");
+
 
         bool dx = false;
         bool sx = false;
 
         for (int i = 1; i <= 2; i++) {
+          Serial.println("INIZIO CONTROLLI");
           M.move(0, 0);
           delay(10);
+
+          uint16_t clear, r, g, b;
 
           M.move(STD_V, -STD_V);
           delay(OSCILLA);
           M.move(0, 0);
           delay(100);
+
+          tcs.setInterrupt(false);      // turn on LED
+          delay(60);  // takes 50ms to read
+          tcs.getRawData(&r, &g, &b, &clear);
+          tcs.setInterrupt(true);  // turn off LED
           dx = isGreen(r, g, b);
 
           M.move(-STD_V, STD_V);
           delay(2 * OSCILLA);
           M.move(0, 0);
           delay(100);
+
+          tcs.setInterrupt(false);      // turn on LED
+          delay(60);  // takes 50ms to read
+          tcs.getRawData(&r, &g, &b, &clear);
+          tcs.setInterrupt(true);  // turn off LED
           sx = isGreen(r, g, b);
 
           M.move(STD_V, -STD_V);
@@ -124,6 +129,7 @@ void loop()
             delay(MUOVI_1);
             M.move(STD_V, -STD_V);
             delay(MUOVI_2);
+            Serial.println("VERDE");
             break;
           }
           else if (sx)
@@ -132,6 +138,7 @@ void loop()
             delay(MUOVI_1);
             M.move(-STD_V, STD_V);
             delay(MUOVI_2);
+            Serial.println("VERDE");
             break;
           }
           else if (i == 2)
@@ -140,38 +147,39 @@ void loop()
             delay(1000);
             break;
           }
-
-
-
+          Serial.println("FINE CONTROLLI");
         }
+
+        Serial.println("FINE INCROCIO");
+
       }
 
-        int pid_s = STD_V + pidous.pid_bool(data);
-        int pid_d = STD_V - pidous.pid_bool(data);
+      int pid_s = STD_V + pidous.pid_bool(data);
+      int pid_d = STD_V - pidous.pid_bool(data);
 
-        if (-MIN_V < pid_s && pid_s < MIN_V) {
-          if (pid_s < 0)
-            pid_s += (2 * MIN_V);
-          else
-            pid_s -= (2 * MIN_V);
-        }
-
-        if (-MIN_V < pid_d && pid_d < MIN_V) {
-          if (pid_d < 0)
-            pid_d += (2 * MIN_V);
-          else
-            pid_d -= (2 * MIN_V);
-        }
-        Serial.print(pid_s);
-        Serial.print("   ");
-        Serial.println(pid_d);
-
-        M.move(pid_s, pid_d);
+      if (-MIN_V < pid_s && pid_s < MIN_V) {
+        if (pid_s < 0)
+          pid_s += (2 * MIN_V);
+        else
+          pid_s -= (2 * MIN_V);
       }
-    
+
+      if (-MIN_V < pid_d && pid_d < MIN_V) {
+        if (pid_d < 0)
+          pid_d += (2 * MIN_V);
+        else
+          pid_d -= (2 * MIN_V);
+      }
+      Serial.print(pid_s);
+      Serial.print("   ");
+      Serial.println(pid_d);
+
+      M.move(pid_s, pid_d);
     }
 
   }
+
+}
 
 
 
