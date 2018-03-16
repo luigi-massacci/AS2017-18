@@ -47,9 +47,21 @@ void loop()
       Casi = pidous.controllo(data);
       
 
-//      if(Casi.a_retto_sx && Casi.a_retto_dx)
-//        M.move(0, 0);
-//        delay(10000);
+      if(Casi.a_retto_sx && Casi.a_retto_dx)
+      {
+        
+        Serial.println("aaaaa");
+        M.move(0, 0);
+        delay(1000);
+
+        //if verde
+        
+        //else
+        M.move(MAX_V, MAX_V);
+        delay(1000);
+        M.move(0, 0);
+
+      }
         
       int pid_s = STD_V+pidous.pid_bool(data);
       int pid_d = STD_V-pidous.pid_bool(data);

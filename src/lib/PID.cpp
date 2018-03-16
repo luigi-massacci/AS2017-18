@@ -47,4 +47,5 @@ eccezione PID::controllo(int* vet){
       responso.a_retto_dx &= (vet[i]<BIANCO);
     responso.linea |= (vet[i]<BIANCO);
   }
+  return responso;
 }

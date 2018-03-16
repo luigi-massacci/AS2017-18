@@ -39,21 +39,21 @@ void Motori::move( int SX, int DX) //lato=0 sinistra,   lato=1 destra
 void Motori::aggira_ostacolo(){
   move(0, 0);
   move(segno*STD_V, segno*(-STD_V));
-  delay(TEMPO_ROTAZIONE);
+  delay(TEMPO_GIRO1);
 
   move(STD_V, STD_V);
   delay(TEMPO_AGGIRAMENTO);
 
   move(segno*(-STD_V), segno*STD_V);
-  delay(TEMPO_ROTAZIONE);
+  delay(TEMPO_GIRO2);
 
   move(STD_V, STD_V);
   delay(TEMPO_SUPERAMENTO);
 
   move(segno*(-STD_V), segno*STD_V);
-  delay(TEMPO_ROTAZIONE-1500);
+  delay(TEMPO_GIRO2-1000);
 
   move(STD_V, STD_V);
-  delay(2500);  
+  delay(1500);
 
 }
