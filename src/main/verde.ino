@@ -17,30 +17,52 @@ int data[8];
 
 void setup()
 {
-  Wire.begin();
+
+  Wire.begin();           //initialize comm protocols
   Serial.begin(9600);
-
-  tcs.begin();
-  Tof.init();
-  Tof.setTimeout(500);
-  Tof.startContinuous();
-  t = 0;
-
-  pinMode(11, OUTPUT); //vanno rigorosamente qua e non nei costruttori
+  
+  pinMode(11, OUTPUT);     //set pins
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(9, OUTPUT);
+  pinMode(12, OUTPUT);
+
+    //initialize ToF
+    Serial.println("A");
+
+  digitalWrite(12, LOW);    
+  //change ToF address
+  delay(10);
+  digitalWrite(12, HIGH);
+  
+  Tof.init(); 
+  delay(100);
+
+  Tof.setAddress((uint8_t) 0x31);
+
+  Tof.setTimeout(500);
+  Tof.startContinuous();
+
+
+  tcs.begin();            //initialize color sensor
+        Serial.println("A");
+t = 0;
+
 }
 
 
 void loop()
 {
   eccezione Casi;
+  Serial.println("1");
   if (Tof.readRangeContinuousMillimeters() < SPAZIO_OSTACOLO)
     M.aggira_ostacolo();
+
   Wire.requestFrom(9, 16);
+
   while (Wire.available())
   {
+
     int h = Wire.read();
     if (!(t % 2))
       data[t / 2] = h;
@@ -49,13 +71,16 @@ void loop()
     else {
       t = 0;
 
+    for (int i = 0; i < 8; ++i)
+      Serial.println(data[i]);
+      
       Casi = pidous.controllo(data);
 
-
+      
 
       if (Casi.a_retto_sx && Casi.a_retto_dx)
       {
-
+        Serial.println("A");
         uint16_t clear, r, g, b;
         tcs.setInterrupt(false);      // turn on LED
         delay(60);  // takes 50ms to read
@@ -119,6 +144,7 @@ void loop()
 
 
         }
+      }
 
         int pid_s = STD_V + pidous.pid_bool(data);
         int pid_d = STD_V - pidous.pid_bool(data);
@@ -142,9 +168,10 @@ void loop()
 
         M.move(pid_s, pid_d);
       }
+    
     }
 
   }
-}
+
 
 
