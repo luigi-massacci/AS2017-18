@@ -17,7 +17,7 @@ void setup()
 {
   Wire.begin();
   Serial.begin(9600);
-  Tof.init();
+  Tof.init(0x31);
   Tof.setTimeout(500);
   Tof.startContinuous();
   t = 0;
