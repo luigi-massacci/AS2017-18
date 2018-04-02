@@ -31,59 +31,59 @@ void setup()
 void loop()
 {
   eccezione Casi;
-  if(Tof.readRangeContinuousMillimeters() < SPAZIO_OSTACOLO)
+  if (Tof.readRangeContinuousMillimeters() < SPAZIO_OSTACOLO)
     M.aggira_ostacolo();
   Wire.requestFrom(9, 16);
   while (Wire.available())
   {
-    int h=Wire.read();
-    if(!(t%2))
-      data[t/2] = h;
+    int h = Wire.read();
+    if (!(t % 2))
+      data[t / 2] = h;
     if (t < 15)
       t++;
-    else{
+    else {
       t = 0;
 
       Casi = pidous.controllo(data);
-      
 
-      if(Casi.a_retto_sx && Casi.a_retto_dx)
+
+      if (Casi.a_retto_sx && Casi.a_retto_dx)
       {
-        
+
         Serial.println("aaaaa");
         M.move(0, 0);
         delay(1000);
 
         //if verde
-        
+
         //else
         M.move(MAX_V, MAX_V);
         delay(1000);
         M.move(0, 0);
 
       }
-        
-      int pid_s = STD_V+pidous.pid_bool(data);
-      int pid_d = STD_V-pidous.pid_bool(data);
 
-     if(-MIN_V < pid_s && pid_s < MIN_V){
-       if(pid_s < 0)
-         pid_s+=(2*MIN_V);
-       else
-         pid_s-=(2*MIN_V);
-     }
+      int pid_s = STD_V + pidous.pid_bool(data);
+      int pid_d = STD_V - pidous.pid_bool(data);
 
-     if(-MIN_V < pid_d && pid_d < MIN_V){
-       if(pid_d < 0)
-         pid_d+=(2*MIN_V);
-       else
-         pid_d-=(2*MIN_V);
-     }
-     Serial.print(pid_s);
-     Serial.print("   ");
-     Serial.println(pid_d);
+      if (-MIN_V < pid_s && pid_s < MIN_V) {
+        if (pid_s < 0)
+          pid_s += (2 * MIN_V);
+        else
+          pid_s -= (2 * MIN_V);
+      }
 
-     M.move(pid_s, pid_d);
+      if (-MIN_V < pid_d && pid_d < MIN_V) {
+        if (pid_d < 0)
+          pid_d += (2 * MIN_V);
+        else
+          pid_d -= (2 * MIN_V);
+      }
+      Serial.print(pid_s);
+      Serial.print("   ");
+      Serial.println(pid_d);
+
+      M.move(pid_s, pid_d);
     }
   }
 

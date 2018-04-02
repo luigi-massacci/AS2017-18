@@ -18,7 +18,7 @@ PID::PID(double p, double i, double d){
   I=0;
 }
 
-int PID::pid_bool(int* vet){
+int PID::pid(int* vet){
   double E_prec=E;
   E=0;
   int n=0;

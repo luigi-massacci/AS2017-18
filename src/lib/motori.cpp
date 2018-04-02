@@ -57,3 +57,19 @@ void Motori::aggira_ostacolo(){
   delay(1500);
 
 }
+
+void Motori::indietro()
+{
+  //
+}
+
+void Motori::svolta(int dir)
+{
+  //
+}
+
+
+void Motori::avanti()
+{
+  //
+}

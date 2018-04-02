@@ -11,13 +11,11 @@ class PID{
   private:
     double Kp, Ki, Kd;
     double P, I, D, E;
-
   public:
     PID();
     PID(double, double, double);
-    int pid_bool(int*);
+    int pid(int*);
     eccezione controllo(int*);
 };
 
 #endif
-

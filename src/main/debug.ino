@@ -19,21 +19,21 @@ void setup()
 
   Wire.begin();           //initialize comm protocols
   Serial.begin(9600);
-  
+
   pinMode(11, OUTPUT);     //set pins
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(9, OUTPUT);
   pinMode(12, OUTPUT);
 
-    //initialize ToF
+  //initialize ToF
 
-  digitalWrite(12, LOW);    
+  digitalWrite(12, LOW);
   //change ToF address
   delay(10);
   digitalWrite(12, HIGH);
-  
-  Tof.init(); 
+
+  Tof.init();
   delay(100);
 
   Tof.setAddress((uint8_t) 0x31);
