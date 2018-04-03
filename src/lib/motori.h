@@ -9,9 +9,9 @@ class Motori{
     Motori(int, int, int, int);
     void move(int, int);
     void aggira_ostacolo();
-    void svolta(int);
     void indietro();
     void avanti();
+    void svolta(int);
 };
 
 

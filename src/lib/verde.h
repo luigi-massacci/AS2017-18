@@ -10,12 +10,6 @@ bool isGreen(uint16_t R, uint16_t G, uint16_t B)
     return false;
 }
 
-int verde()
-{
-  //
-}
-
-
 #endif
 
 

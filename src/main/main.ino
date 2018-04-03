@@ -13,8 +13,8 @@ Motori M(11, 3, 9, 5);
 PID pidous(10, 20, 5); //30, 0, 0 --> 10, 10, 5 --> 10, 20, 5
 VL53L0X Tof;
 VL53L0X Tof1;
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
-Adafruit_TCS34725 tcs1 = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
+Adafruit_TCS34725 sens = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
+Adafruit_TCS34725 sens1 = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
 
 
 //VARIABILI GLOBALI
@@ -31,6 +31,9 @@ void setup()
   pinMode(3, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(9, OUTPUT);
+  
+  pinMode(12, OUTPUT);
+  pinMode(10, OUTPUT);
 
   //INIZIALIZZAZIONE SENSORI
   digitalWrite(12, LOW);          //TOF 1
@@ -41,17 +44,18 @@ void setup()
   Tof.setAddress((uint8_t) 0x31);
   Tof.setTimeout(500);
   Tof.startContinuous();
-  digitalWrite(12, LOW);          //TOF 2
+  
+  digitalWrite(10, LOW);          //TOF 2
   delay(10);
-  digitalWrite(12, HIGH);
+  digitalWrite(10, HIGH);
   Tof1.init();
   delay(100);
-  Tof1.setAddress((uint8_t) 0x31);
+  Tof1.setAddress((uint8_t) 0x32);
   Tof1.setTimeout(500);
   Tof1.startContinuous();
 
-  tcs.begin();                  //S. VERDE 1
-  tcs1.begin();                 //S. vERDE 2
+  sens.begin();                  //S. VERDE SINISTRA
+  sens1.begin();                 //S. vERDE DESTRA
 
 }
 
@@ -76,29 +80,27 @@ void loop()
       t = 0;
   }
 
-  int verde = verde();
+  int V = verde();
 
-
-  if (verde == ENTRAMBI)
+  if (V == ENTRAMBI)
     M.indietro();
-  else if (verde == DESTRA)
+  else if (V == DESTRA)
     M.svolta(1);
-  else if (verde == SINISTRA)
-    svolta(-1);
+  else if (V == SINISTRA)
+    M.svolta(-1);
   else
   {
-    e1 = pidous.controllo();
+    e1 = pidous.controllo(data);
     M.avanti();
-    e2 = pidous.controllo();
+    e2 = pidous.controllo(data);
 
-    if (e1.a_retto_sx && e1.a_retto_dx && !e2.a_retto_dx)
+    if (e1.a_retto_sx && e1.a_retto_dx && !e2.linea)
       ;//storto
     else if (e1.a_retto_dx && !e2.linea)
-      svolta(1);
+      M.svolta(1);
     else if (e1.a_retto_sx && !e2.linea)
-      svolta(-1);
-      
-    }
+      M.svolta(-1);
+  }
 
   int pid_s = STD_V + pidous.pid(data);
   int pid_d = STD_V - pidous.pid(data);
@@ -117,10 +119,40 @@ void loop()
     else
       pid_d -= (2 * MIN_V);
   }
-  Serial.print(pid_s);
-  Serial.print("   ");
-  Serial.println(pid_d);
+
+  /*
+    Serial.print(pid_s);
+    Serial.print("   ");
+    Serial.println(pid_d);
+  */
 
   M.move(pid_s, pid_d);
 
 }
+
+int verde()
+{
+
+  uint16_t clear, red, green, blue;
+  sens.setInterrupt(false);     
+  delay(60);  
+  sens.getRawData(&red, &green, &blue, &clear);
+  sens.setInterrupt(true);  
+  bool sx = isGreen(red, green, blue);
+
+  sens1.setInterrupt(false);     
+  delay(60);  
+  sens1.getRawData(&red, &green, &blue, &clear);
+  sens1.setInterrupt(true);  
+  bool dx = isGreen(red, green, blue);
+
+  if (dx && sx)
+    return ENTRAMBI;
+  else if (dx)
+    return DESTRA;
+  else if (sx)
+    return SINISTRA;
+  else
+    return -1;  
+}
+

@@ -38,19 +38,19 @@ void Motori::move( int SX, int DX) //lato=0 sinistra,   lato=1 destra
 
 void Motori::aggira_ostacolo(){
   move(0, 0);
-  move(segno*STD_V, segno*(-STD_V));
+  move(STD_V*DIREZIONE, -STD_V*DIREZIONE);
   delay(TEMPO_GIRO1);
 
   move(STD_V, STD_V);
   delay(TEMPO_AGGIRAMENTO);
 
-  move(segno*(-STD_V), segno*STD_V);
+  move(-STD_V*DIREZIONE, STD_V*DIREZIONE);
   delay(TEMPO_GIRO2);
 
   move(STD_V, STD_V);
   delay(TEMPO_SUPERAMENTO);
 
-  move(segno*(-STD_V), segno*STD_V);
+  move(-STD_V*DIREZIONE, STD_V*DIREZIONE);
   delay(TEMPO_GIRO2-1000);
 
   move(STD_V, STD_V);
@@ -60,16 +60,25 @@ void Motori::aggira_ostacolo(){
 
 void Motori::indietro()
 {
-  //
+  move(0, 0);
+  move(STD_V*dir, -STD_V*dir);
+  delay(6000); //da aggiustare
+  move(0, 0);
 }
 
 void Motori::svolta(int dir)
 {
-  //
+  move(0, 0);
+  move(STD_V*dir, -STD_V*dir);
+  delay(2000); //da aggiustare
+  move(0, 0);
 }
 
 
 void Motori::avanti()
 {
-  //
+  move(0, 0);
+  move(MAX_V, MAX_V);
+  delay(1000);
+  move(0, 0);
 }
