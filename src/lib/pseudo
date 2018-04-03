@@ -1,0 +1,15 @@
+VERDE:
+    def verde():
+        var r, g, b
+        r,g,b <-- leggi da sens 1
+        bool dx = isGreen(r, g, b)
+        r,g,b <-- leggi da sens 2
+        bool sx = isGreen(r, g, b)
+        
+        if (sx && dx)
+            return ENTRAMBI
+        elif (sx)
+            reurn SX
+        elif (dx)
+            return dx
+        
