@@ -1,10 +1,10 @@
 PER APRIRLO:
 - Blender: okay, per motivi di scala/poligoni/texture si vede un po' male l' OBJ, l'STL va bene.
-	 Potrebbe essere necessario arrotondare i parametri dell' MTL (teoricamente no dato che l'ho gi‡ fatto io)
+	 Potrebbe essere necessario arrotondare i parametri dell' MTL (teoricamente no dato che l'ho gi√† fatto io)
 - Freecad: okay STL; non supporta i file MTL, quindi aprendo l'OBJ si perdono i colori. O li mette a caso.
 - Alternative becere: (giusto per guardarlo)
-	- paint 3D di Windows: ok, ma per qualche motivo lo mostra in verticale. Ma va be', si puÚ sopravvivere.
-	- 3D builder di Windows (aprendo il programma e poi da lÏ il file): ok. Sempre un po' bruttino per la mancanza di texture. 
+	- paint 3D di Windows: ok, ma per qualche motivo lo mostra in verticale. Ma va be', si pu√≤ sopravvivere.
+	- 3D builder di Windows (aprendo il programma e poi da l√¨ il file): ok. Sempre un po' bruttino per la mancanza di texture. 
 	- il programma predefinito di Windows (il cui nome ignoro): ok, come paint 3D lo mette in verticale
 - Per chi non ha nessuno dei programmi precedenti:
 	- Online 3D viewer (https://3dviewer.net/): ok. Ricordatevi di selezionare anche l'MTL assieme all'OBJ.
@@ -16,8 +16,8 @@ LEGENDA:
 	- Arduino UNO: se non la vedete strappatevi gli occhi. Sopraelevata per poterci far passare i cavi dei motori sotto.
 		mancano i buchi per le viti, ma dato che le varie schede (cinesi e non, versioni vecchie/nuove) ce li hanno in punti diversi, facciamo 
 		con il buon vecchio trapano.
-	- multiplexer: il rettangolo davanti blu. Sopraelevato per necessit‡ di viti, 
-		e cosÏ possiamo anche farci passare i cavi sotto.
+	- multiplexer: il rettangolo davanti blu. Sopraelevato per necessit√† di viti, 
+		e cos√¨ possiamo anche farci passare i cavi sotto.
 	- ponte h: il quadrato rosso.
 	- buchi vari che potreste aver notato: se tondi per le viti, se rettangolari per i pin/cavi del relativo sensore.
 	- spazio sotto (cavo): per la batteria enorme di Rolleri.
@@ -26,8 +26,6 @@ DIMENSIONI (molto all'incirca):
 	- larghezza: 16,4 cm
 	- lunghezza: 18,8 cm
 	- altezza: 7 cm (i.e. l'altezza delle ruote)
-	- altezza del punto pi˘ basso dal suolo 1,37 cm (i bumper sono massimo 1), 
+	- altezza del punto pi√π basso dal suolo 1,37 cm (i bumper sono massimo 1), 
 		ma non ci sono alternative. Mettendola sopra sarebbe in mezzo come non so cosa la batteria, e nell'altro verso non ci sta proprio 
 	- altezza del ToF superiore: 6,3 cm.
-
-	
