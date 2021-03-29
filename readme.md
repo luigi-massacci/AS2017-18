@@ -1,22 +1,22 @@
-##rescuea
-#Rescue Line Galilei 2017
+## rescuea
+# Rescue Line Galilei 2017
 This is the repository where we are developing the _code_ that will guide our robot at the 2017 edition of the Robocup JR in the Rescue Line competition.
 
-![Alt text](https://upload.wikimedia.org/wikipedia/commons/f/fa/Martian_rover_Curiosity_using_ChemCam_Msl20111115_PIA14760_MSL_PIcture-3-br2.jpg "Our robot")
+![Alt text](https://mars.nasa.gov/layout/mars2020/images/home/MarsPerseveranceRover_SampleCollection.jpg "Our robot")
 
-##Commits
-###Prefixes:
+## Commits
+### Prefixes:
  Since mostof you are lazy and use GitKraken, there's no point in telling you what prefix to use.
-###Content:
+### Content:
   Keep it short and simple. But not stupid. Please.
 
 
-##Code standards
+## Code standards
  if in doubt, follow the Python Zen (import this).
-###Indentation
+### Indentation
  Indentations are made by a tab.
 
-###Comments
+### Comments
 Comments should respect these parameters:
 
 + the language used is English
@@ -32,7 +32,7 @@ The structure used to describe a function is as follows:
 
 * * *
 
-##Contributors
+## Contributors
 
 + Luigi
 + Nicola
